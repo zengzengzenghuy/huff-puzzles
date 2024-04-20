@@ -9,5 +9,13 @@
  */
 
 #define macro MAIN() = takes(0) returns(0) {
+    // if msg.value != 0, revert
+    callvalue
+    iszero iszero
+    nonpayable jumpi
+    0x20 0x00 return
+
+    nonpayable: 
+        0x00 0x00 revert
 
 }
