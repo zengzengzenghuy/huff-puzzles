@@ -11,7 +11,40 @@
 
 #define function multiply(uint256, uint256) payable returns(uint256)
 
+#define macro MULTIPLY() = takes(2) returns(1){
+    // [a,b]
+    mul // [a*b]
+    0x24 calldataload // [b,a*b]
+    0x04 calldataload // [a,b,a*b]
+    dup2 // [b,a,b,a*b]
+    dup4 // [a*b,b,a,b,a*b]
+    div // [a*b/b, a,b,a*b]
+    eq iszero // [a!= (a*b)/b,b,a*b]
+    swap1   // [b, a!=(a*b)/b, a*b]
+    iszero iszero // [b!=0, a!=(a*b)/b, a*b]
+    and // [is_overflow, a*b]
+    overflow jumpi
+    0x00 mstore
+    0x20 0x00 return
+ 
+    overflow: 
+        0x00 0x00 revert
+}
+
 
 #define macro MAIN() = takes(0) returns(0) {
+    0x24 calldataload // [b]
+    0x04 calldataload // [a,b]
+    0x00 calldataload // [calldata, a, b]
+    0xE0 shr // [func_sig,a,b]
 
+   
+    __FUNC_SIG(multiply)     
+    eq                       
+    multiply jumpi   
+
+    0x00 0x00 revert
+
+    multiply:
+        MULTIPLY()
 }
