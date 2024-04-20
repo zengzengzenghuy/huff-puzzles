@@ -13,5 +13,10 @@
 
 
 #define macro MAIN() = takes(0) returns(0) {
-    
+
+    0x20 0x00 mstore  // free memory pointer
+    0x09 0x20 mstore  // length of bytes("Only Huff") 9 bytes
+    0x4f6e6c7920487566660000000000000000000000000000000000000000000000 0x40 mstore // bytes("Only Huff")= UTF-8 encoded(Only Huff)
+    0x60 0x00 revert
+
 }
